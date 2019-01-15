@@ -20,22 +20,31 @@ app.get("/test", function (req, res) {
     visualRecognition.classify(params, function (err, response) {
         if (err)
             console.log(err);
-        else{
+        else {
             //Store the response into a string
             var result = JSON.stringify(response, null, 2);
             //Note that the return data is stored in response
-            res.end(response.images.constructor.name + "");
-            console.log(result);
-           
+            //res.write(response.images.constructor.name + "\n");
+            //res.write(response.images[0].constructor.name + "\n");
+            //res.end(response.images[0].classifiers[0].classes.constructor.name + "\n");
+            //Get the array of classes (category classification)
+            var class_col = response.images[0].classifiers[0].classes;
+            for (i = 0; i < class_col.length; i++) {
+                res.write(class_col[i].class + "\t");
+                res.write(class_col[i].score + "\n");
+            }
+            res.end("END");
+
+
         }
     });
- 
+
 
 })
 
 
-//var listener = app.listen(process.env.PORT, process.env.IP, function () {
-    var listener = app.listen(4000,process.env.IP,function(){
+var listener = app.listen(process.env.PORT, process.env.IP, function () {
+//var listener = app.listen(4000, process.env.IP, function () {
     //var listener = app.listen(process.env.PORT,process.env.IP,function(){
     console.log("server has started");
     console.log('Listening on port ' + listener.address().port);
